@@ -1,7 +1,5 @@
 "use strict";
 
-const camelCase = require('lodash.camelcase');
-
 function isOption(str) {
   return (str || '').match(/^--?[^\d]+/);
 }
@@ -13,17 +11,18 @@ function isMulti(str) {
 }
 
 function compute(r, name, val) {
-  let nameCam = camelCase(name.replace(/^--?/, ''));
-  if (name.substr(0, 5) === '--no-') {
-    nameCam = camelCase(nameCam.substr(2));
+  const origName = name;
+  name = name.replace(/^--?/, '');
+  if (name.substr(0, 3) === 'no-') {
+    name = name.substr(3);
     val = false;
   }
-  const mul = isMulti(name);
+  const mul = isMulti(origName);
   if (mul) {
     mul.forEach(o => r[o] = true);
     return r;
   }
-  r[nameCam] = nameCam in r ? [r[nameCam]].concat(val) : val;
+  r[name] = name in r ? [r[name]].concat(val) : val;
   return r;
 }
 
