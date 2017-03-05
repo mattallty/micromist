@@ -11,7 +11,7 @@ function micromist(args) {
   let curr;
 
   function isOption(str) {
-    return str.match(/^--?[^\d]+/);
+    return (str || '').match(/^--?[^\d]+/);
   }
 
   function isMulti(str) {
@@ -53,7 +53,7 @@ function micromist(args) {
       compute(r, parts[0], parts[1]);
     } else {
       const next = it.next();
-      compute(r, parts[0], isOption(next.done ? '' : next.value) ? true : next.value);
+      compute(r, parts[0], isOption(next.value) ? true : next.value || true);
     }
   }
 
