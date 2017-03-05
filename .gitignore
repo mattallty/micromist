@@ -2,6 +2,9 @@
 logs
 *.log
 npm-debug.log*
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/watcherTasks.xml
 
 # Runtime data
 pids
