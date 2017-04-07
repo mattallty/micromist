@@ -13,22 +13,46 @@ function isMulti(str) {
 function compute(r, name, val) {
   const origName = name;
   name = name.replace(/^--?/, '');
-  if (name.substr(0, 3) === 'no-') {
-    name = name.substr(3);
-    val = false;
-  }
   const mul = isMulti(origName);
   if (mul) {
     mul.forEach(o => r[o] = true);
     return r;
   }
-  r[name] = name in r ? [r[name]].concat(val) : val;
+  r[name] = name in r ? (Array.isArray(r[name]) ? r[name] : [r[name]]).concat(val) : val;
   return r;
 }
 
-function micromist(args) {
+function parseValue(name, val, opts) {
+  if (typeof val === 'undefined') {
+    val = true;
+  }
+  if (typeof val === 'string' && val === 'true') {
+    val = true;
+  } else if(typeof val === 'string' && val === 'false') {
+    val = false;
+  }
+  if (Array.isArray(opts.string) && opts.string.indexOf(name) !== -1 && typeof val !== 'string') {
+    val = undefined;
+  }
+  return val;
+}
+
+/**
+ *
+ * @param args
+ * @param {Object} opts
+ * @param {String|String[]} opts.string - A string or array of strings argument names to always treat as strings
+ *
+ * @returns {{_: Array}}
+ */
+function micromist(args, opts) {
 
   args = args.slice(2);
+  opts = opts || {};
+
+  if (typeof opts.string === 'string') {
+    opts.string = [opts.string];
+  }
 
   const r = {_:[]};
   let pointer = 0;
@@ -54,7 +78,7 @@ function micromist(args) {
     } else {
       const next = args[pointer+1];
       isNextOpt = isOption(next);
-      compute(r, parts[0], isNextOpt ? true : next || true);
+      compute(r, parts[0], isNextOpt ? parseValue(parts[0], true, opts) : parseValue(parts[0], next, opts));
     }
 
     pointer += isNextOpt ? 1 : 2;

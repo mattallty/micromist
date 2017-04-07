@@ -4,7 +4,9 @@
   "description": "A minimal argument parser",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "benchmark": "node ./benchmark/benchmark.js",
+    "bench": "npm run benchmark"
   },
   "repository": {
     "type": "git",
