@@ -42,6 +42,7 @@ function parseValue(name, val, opts) {
  * @param args
  * @param {Object} opts
  * @param {String|String[]} opts.string - A string or array of strings argument names to always treat as strings
+ * @param {String|String[]} opts.boolean - A string or array of strings argument names to always treat as true values
  *
  * @returns {{_: Array}}
  */
@@ -52,6 +53,9 @@ function micromist(args, opts) {
 
   if (typeof opts.string === 'string') {
     opts.string = [opts.string];
+  }
+  if (typeof opts.boolean === 'string') {
+    opts.boolean = [opts.boolean];
   }
 
   const r = {_:[]};
@@ -75,6 +79,8 @@ function micromist(args, opts) {
 
     if (parts.length > 1) {
       compute(r, parts[0], parts[1]);
+    } else if (opts.boolean !== undefined && opts.boolean.includes(parts[0])) {
+      compute(r, parts[0], true);
     } else {
       const next = args[pointer+1];
       isNextOpt = isOption(next);
